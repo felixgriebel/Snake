@@ -285,9 +285,9 @@ public class GameFrame extends JFrame {
 
         int appleType = 0;
         int possi = (int) (Math.random() * 100);
-        if (possi < 8) {
+        if (possi < 6) {
             appleType = 1;
-        } else if (possi < 15) {
+        } else if (possi < 12) {
             appleType = 2;
         }
 
