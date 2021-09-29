@@ -9,16 +9,18 @@ import java.util.concurrent.TimeUnit;
 
 public class GameFrame extends JFrame {
 
-
+    //TODO 1: dependencies stimmig machen
 
     public static Color headColor = new Color(0, 79, 21);
     public static Color tailColor = Color.green;
     public static Color appleColor = Color.RED;
+    public static Color appleSpeedColor = Color.MAGENTA;
+    public static Color appleHalfingColor = Color.ORANGE;
     public static Color backColor = Color.BLACK;
 
     private static final int WIDTH = 500;
     private static final int HEIGHT = 500;
-    private static final int SPEED = 3;
+    private static int SPEED = 3;
     public static final int BODY_SIZE = 15;
     private static final int ADDITION_PER_APPLE = 15;
     private static final int LOST_SCREEN_SIZE = WIDTH / 15;
@@ -35,7 +37,6 @@ public class GameFrame extends JFrame {
 
     private boolean addBody = false;
 
-    private boolean darkMode = true;
 
 
     private final BodyElement innerPanel;
@@ -51,9 +52,10 @@ public class GameFrame extends JFrame {
 
 
         URL iconURL = getClass().getResource("snake_icon.png");
-// iconURL is null when not found
-        ImageIcon icon = new ImageIcon(iconURL);
-        this.setIconImage(icon.getImage());
+        if (iconURL != null) {
+            ImageIcon icon = new ImageIcon(iconURL);
+            this.setIconImage(icon.getImage());
+        }
 
         panel = new JPanel();
         panel.setBackground(backColor);
@@ -126,31 +128,37 @@ public class GameFrame extends JFrame {
                             }
                         }
                         if (e.getKeyCode() == KeyEvent.VK_L) {
-                            if (darkMode) {
+
+                            if (backColor.equals(Color.BLACK)){
                                 backColor = Color.GRAY;
                                 panel.setBackground(backColor);
 
                                 headColor = new Color(50, 50, 252);
                                 tailColor = Color.BLUE;
-                                appleColor = new Color(244, 228, 2);
                                 innerPanel.setBackground(headColor);
                                 for (BodyElement bodyElement : tail) {
                                     bodyElement.setBackground(tailColor);
                                 }
-                                apple.setBackground(appleColor);
-                                darkMode = false;
-                            } else {
+                            }else if(backColor.equals(Color.GRAY)){
+                                backColor = new Color(73,49,79);
+                                panel.setBackground(backColor);
+                                headColor = new Color(1, 165, 160);
+                                tailColor = new Color(2, 249, 241);
+
+                                innerPanel.setBackground(headColor);
+                                for (BodyElement bodyElement : tail) {
+                                    bodyElement.setBackground(tailColor);
+                                }
+                            }else{
                                 backColor = Color.BLACK;
                                 panel.setBackground(backColor);
                                 headColor = new Color(0, 79, 21);
                                 tailColor = Color.GREEN;
-                                appleColor = Color.RED;
+
                                 innerPanel.setBackground(headColor);
                                 for (BodyElement bodyElement : tail) {
                                     bodyElement.setBackground(tailColor);
                                 }
-                                apple.setBackground(appleColor);
-                                darkMode = true;
                             }
                         }
                     }
@@ -263,7 +271,7 @@ public class GameFrame extends JFrame {
     }
 
     public void reset() throws InterruptedException {
-        for(int i=0;i<8;i++){
+        for (int i = 0; i < 8; i++) {
             innerPanel.setBackground(Color.RED);
             TimeUnit.MILLISECONDS.sleep(250);
             innerPanel.setBackground(headColor);
@@ -274,7 +282,22 @@ public class GameFrame extends JFrame {
     }
 
     public void spawnApple() {
-        apple.setBackground(appleColor);
+
+        int appleType = 0;
+        int possi = (int) (Math.random() * 100);
+        if (possi < 8) {
+            appleType = 1;
+        } else if (possi < 15) {
+            appleType = 2;
+        }
+
+        switch (appleType) {
+            case 0 -> apple.setBackground(appleColor);
+            case 1 -> apple.setBackground(appleSpeedColor);
+            case 2 -> apple.setBackground(appleHalfingColor);
+        }
+
+
         int tempX = ((int) (Math.random() * (WIDTH - BODY_SIZE)));
         int tempY = ((int) (Math.random() * (HEIGHT - BODY_SIZE)));
         apple.setLocation(tempX, tempY);
@@ -293,6 +316,8 @@ public class GameFrame extends JFrame {
             spawnApple();
 
         });
+
+
         if (apple.getBackground().equals(appleColor)) {
             synchronized (this) {
 
@@ -324,6 +349,84 @@ public class GameFrame extends JFrame {
                 }
 
 
+            }
+        } else if (apple.getBackground().equals(appleSpeedColor)) {
+            Thread speedThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SPEED = SPEED + 5;
+                    try {
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    SPEED = SPEED - 5;
+                }
+            });
+            if (innerPanel.getLocation().x >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 1)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                speedThread.start();
+                applethread.start();
+            } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 3)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                speedThread.start();
+                applethread.start();
+            } else if (innerPanel.getLocation().x >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 1 || direction == 2)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                speedThread.start();
+                applethread.start();
+            } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 2 || direction == 3)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                speedThread.start();
+                applethread.start();
+            }
+        } else if (apple.getBackground().equals(appleHalfingColor)) {
+
+            boolean half = false;
+            if (innerPanel.getLocation().x >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 1)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                half = true;
+                applethread.start();
+            } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 3)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                half = true;
+                applethread.start();
+            } else if (innerPanel.getLocation().x >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 1 || direction == 2)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                half = true;
+                applethread.start();
+            } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 2 || direction == 3)) {
+                apple.setBackground(backColor);
+                panel.remove(apple);
+                panel.repaint();
+                half = true;
+                applethread.start();
+            }
+            if (half) {
+
+                for (int i = (tail.size() / 2) - 1; i < tail.size(); i++) {
+                    panel.remove(tail.get(i));
+                }
+                int start = tail.size() - 1;
+                int ende = (tail.size() / 2) - 1;
+                for (int i = start; i >= ende; i--) {
+                    tail.remove(i);
+                }
+                panel.repaint();
             }
         }
     }
