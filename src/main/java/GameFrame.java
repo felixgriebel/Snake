@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class GameFrame extends JFrame {
-    //TODO 1: add icon
-    //TODO 2: add lost screen
+
 
 
     public static Color headColor = new Color(0, 79, 21);
