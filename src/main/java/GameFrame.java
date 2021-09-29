@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +49,12 @@ public class GameFrame extends JFrame {
         this.setLayout(new GridLayout(1, 1));
         this.getContentPane().setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.pack();
+
+
+        URL iconURL = getClass().getResource("snake_icon.png");
+// iconURL is null when not found
+        ImageIcon icon = new ImageIcon(iconURL);
+        this.setIconImage(icon.getImage());
 
         panel = new JPanel();
         panel.setBackground(backColor);
@@ -257,38 +264,12 @@ public class GameFrame extends JFrame {
     }
 
     public void reset() throws InterruptedException {
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(Color.RED);
-        TimeUnit.MILLISECONDS.sleep(250);
-        innerPanel.setBackground(headColor);
-        TimeUnit.MILLISECONDS.sleep(250);
+        for(int i=0;i<8;i++){
+            innerPanel.setBackground(Color.RED);
+            TimeUnit.MILLISECONDS.sleep(250);
+            innerPanel.setBackground(headColor);
+            TimeUnit.MILLISECONDS.sleep(250);
+        }
         this.dispose();
         new GameFrame();
     }
