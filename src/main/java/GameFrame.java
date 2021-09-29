@@ -23,7 +23,6 @@ public class GameFrame extends JFrame {
     private static int SPEED = 3;
     public static final int BODY_SIZE = 15;
     private static final int ADDITION_PER_APPLE = 15;
-    private static final int LOST_SCREEN_SIZE = WIDTH / 15;
 
     private int direction = 3;
     private Thread th;
@@ -37,6 +36,9 @@ public class GameFrame extends JFrame {
 
     private boolean addBody = false;
 
+    private int appleCounter = 0;
+
+    private JTextPane are = new JTextPane();
 
 
     private final BodyElement innerPanel;
@@ -75,11 +77,23 @@ public class GameFrame extends JFrame {
         apple.setLocation(WIDTH / 2, HEIGHT / 2);
         panel.add(apple);
 
-        th = new Thread(new RunnableUpdater(this));
+
+        Font font = new Font("Arial", Font.BOLD, 12);
+        are.setFont(font);
+        are.setBackground(backColor);
+        are.setForeground(Color.white);
+        are.repaint();
+        are.setLocation(0, HEIGHT - 20);
+        are.setSize(60, 20);
+        are.setEditable(false);
+        are.setText(Integer.toString(appleCounter));
+        panel.add(are);
 
         for (int i = 0; i < 20; i++) addElement();
 
-        this.addKeyListener(new KeyListener() {
+        th = new Thread(new RunnableUpdater(this));
+
+        are.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
             }
@@ -129,9 +143,10 @@ public class GameFrame extends JFrame {
                         }
                         if (e.getKeyCode() == KeyEvent.VK_L) {
 
-                            if (backColor.equals(Color.BLACK)){
+                            if (backColor.equals(Color.BLACK)) {
                                 backColor = Color.GRAY;
                                 panel.setBackground(backColor);
+                                are.setBackground(backColor);
 
                                 headColor = new Color(50, 50, 252);
                                 tailColor = Color.BLUE;
@@ -139,9 +154,10 @@ public class GameFrame extends JFrame {
                                 for (BodyElement bodyElement : tail) {
                                     bodyElement.setBackground(tailColor);
                                 }
-                            }else if(backColor.equals(Color.GRAY)){
-                                backColor = new Color(73,49,79);
+                            } else if (backColor.equals(Color.GRAY)) {
+                                backColor = new Color(73, 49, 79);
                                 panel.setBackground(backColor);
+                                are.setBackground(backColor);
                                 headColor = new Color(1, 165, 160);
                                 tailColor = new Color(2, 249, 241);
 
@@ -149,9 +165,10 @@ public class GameFrame extends JFrame {
                                 for (BodyElement bodyElement : tail) {
                                     bodyElement.setBackground(tailColor);
                                 }
-                            }else{
+                            } else {
                                 backColor = Color.BLACK;
                                 panel.setBackground(backColor);
+                                are.setBackground(backColor);
                                 headColor = new Color(0, 79, 21);
                                 tailColor = Color.GREEN;
 
@@ -163,8 +180,6 @@ public class GameFrame extends JFrame {
                         }
                     }
                 }
-
-
             }
 
             @Override
@@ -271,6 +286,8 @@ public class GameFrame extends JFrame {
     }
 
     public void reset() throws InterruptedException {
+
+
         for (int i = 0; i < 8; i++) {
             innerPanel.setBackground(Color.RED);
             TimeUnit.MILLISECONDS.sleep(250);
@@ -282,6 +299,7 @@ public class GameFrame extends JFrame {
     }
 
     public void spawnApple() {
+
 
         int appleType = 0;
         int possi = (int) (Math.random() * 100);
@@ -327,24 +345,36 @@ public class GameFrame extends JFrame {
                     panel.remove(apple);
                     panel.repaint();
                     addBody = true;
+
+                    appleCounter++;
+                    are.setText(Integer.toString(appleCounter));
                     applethread.start();
                 } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 3)) {
                     apple.setBackground(backColor);
                     panel.remove(apple);
                     panel.repaint();
                     addBody = true;
+
+                    appleCounter++;
+                    are.setText(Integer.toString(appleCounter));
                     applethread.start();
                 } else if (innerPanel.getLocation().x >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 1 || direction == 2)) {
                     apple.setBackground(backColor);
                     panel.remove(apple);
                     panel.repaint();
                     addBody = true;
+
+                    appleCounter++;
+                    are.setText(Integer.toString(appleCounter));
                     applethread.start();
                 } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 2 || direction == 3)) {
                     apple.setBackground(backColor);
                     panel.remove(apple);
                     panel.repaint();
                     addBody = true;
+
+                    appleCounter++;
+                    are.setText(Integer.toString(appleCounter));
                     applethread.start();
                 }
 
@@ -366,24 +396,36 @@ public class GameFrame extends JFrame {
             if (innerPanel.getLocation().x >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 1)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 speedThread.start();
                 applethread.start();
             } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 3)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 speedThread.start();
                 applethread.start();
             } else if (innerPanel.getLocation().x >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 1 || direction == 2)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 speedThread.start();
                 applethread.start();
             } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 2 || direction == 3)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 speedThread.start();
                 applethread.start();
@@ -394,24 +436,36 @@ public class GameFrame extends JFrame {
             if (innerPanel.getLocation().x >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 1)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 half = true;
                 applethread.start();
             } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && innerPanel.getLocation().y >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && innerPanel.getLocation().y <= (apple.getLocation().y + BODY_SIZE) && (direction == 0 || direction == 3)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 half = true;
                 applethread.start();
             } else if (innerPanel.getLocation().x >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && innerPanel.getLocation().x <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 1 || direction == 2)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 half = true;
                 applethread.start();
             } else if ((innerPanel.getLocation().x + BODY_SIZE) >= apple.getLocation().x && (innerPanel.getLocation().y + BODY_SIZE) >= apple.getLocation().y && (innerPanel.getLocation().x + BODY_SIZE) <= (apple.getLocation().x + BODY_SIZE) && (innerPanel.getLocation().y + BODY_SIZE) <= (apple.getLocation().y + BODY_SIZE) && (direction == 2 || direction == 3)) {
                 apple.setBackground(backColor);
                 panel.remove(apple);
+
+                appleCounter++;
+                are.setText(Integer.toString(appleCounter));
                 panel.repaint();
                 half = true;
                 applethread.start();
