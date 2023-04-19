@@ -12,8 +12,11 @@ To control your snake press:
 
 
    `W` to go up
+
    `A` to go left
+
    `S` to go down
+
    `D` to go right 
 
 
@@ -30,8 +33,11 @@ At the left-bottom corner is you apple counter, you should eat as many apples as
 
 To the apples:
 
+
    `red` is the default apple and you gain length after eating
+
    `orange` is a special apple and halfs the length of you snake
+
    `magenta` makes you go woooosh (you'll see)
 
 
