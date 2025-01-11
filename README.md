@@ -45,3 +45,11 @@ If you die, the snake stops, the head starts blinking and the game resets after 
 
 
 To start the game, press a key.
+
+
+
+### Example pictures
+
+![Alt text for the image](./src/resources/example_pictures/snake_1.png)
+
+![Alt text for the image](./src/resources/example_pictures/snake_2.png)
